@@ -3,7 +3,7 @@ from classes.board import *
 from classes.gameplay import *
 
 class AI:
-    def __init__(self, level=0, player=2):
+    def __init__(self, level=1, player=2):
         self.level = level
         self.player = player
 
@@ -20,7 +20,7 @@ class AI:
             return 1, None
         
         if case == 2:
-            return 2, None
+            return -1, None
         elif board.is_full():
             return 0, None
         
@@ -40,19 +40,28 @@ class AI:
             return maxEval, best_move
         elif not maximizing:
             minEval = 100
-            best_move = None;
-            empty_table = board.get_empty_tables
+            best_move = None
+            empty_table = board.get_empty_tables()
 
             for (row, col) in empty_table:
                 temporaryBoard = copy.deepcopy(board)
-                temporaryBoard.marked_square(row, col, 1)
+                temporaryBoard.marked_square(row, col, self.player)
+                eval = self.minimax_algo(temporaryBoard, True)[0]
+                if eval < minEval:
+                    minEval = eval
+                    best_move = (row, col)
+
+            return minEval, best_move
     
     def evaluate (self, mainBoard):
         if self.level == 0:
             eval = "random"
             move = self.random_number(mainBoard)
-            print("AI has chosen to mark the square in position {} with an evaluation of {}".format(move, eval))
-            return move
+        else:
+            eval, move = self.minimax_algo(mainBoard, False)
+
+        print("AI has chosen to mark the square in position {} with an evaluation of {}".format(move, eval))
+        return move
 
 gameplay = Gameplay()
 gameBoard = gameplay.board
