@@ -15,6 +15,7 @@ class Board:
 
     def marked_square (self, row, col, player):
         self.tables[row][col] = player
+        self.marked_squares += 1
 
     def empty_square (self, row, col):
         return self.tables[row][col] == 0
@@ -33,7 +34,7 @@ class Board:
                     iPos = (columns * box + box // 2, 20)
                     fPos = (columns * box + box // 2, height - 20)
                     pygame.draw.line(screen, color, iPos, fPos, 15)
-                    return self.tables[0][columns]
+                return self.tables[0][columns]
                 
         for r in range(row):
             if self.tables[r][0] == self.tables[r][1] == self.tables[r][2] != 0:
@@ -66,7 +67,7 @@ class Board:
         emptyTables = []
         for rows in range(row):
             for col in range(column):
-                if self.empty_square:
+                if self.empty_square(rows, col):
                     emptyTables.append((rows, col))
         return emptyTables
     
